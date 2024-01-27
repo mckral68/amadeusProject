@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Flights } from '../modules/FlightModels';
+import { Flights } from '../models/FlightModels';
 import * as mockData from '../seedData.json';
 @Injectable({
   providedIn: 'root',

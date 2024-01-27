@@ -10,15 +10,15 @@ import {
   ValidationErrors,
   Validators,
 } from '@angular/forms';
-import { Country, Flights } from '../../modules/FlightModels';
+import { Country, Flights } from '../../models/FlightModels';
 import { MatInputModule } from '@angular/material/input';
 import { Observable, map, startWith } from 'rxjs';
 import { provideNativeDateAdapter } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { AsyncPipe } from '@angular/common';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { MyTimePipe } from '../../pipes/myTime.pipe';
-import { compareSameCode, dateCheck } from '../../validator/validator';
+import { MyTimePipe } from '../../pipes/date-converter.pipe';
+import { compareSameCode, dateCheck } from '../../validators/validator';
 import { ApiService, SearchParams } from '../../api/api.service';
 import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
 
