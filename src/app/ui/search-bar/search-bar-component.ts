@@ -128,7 +128,7 @@ export class SearchBarComponent implements OnInit {
       this.searchForm.controls['return_time'].updateValueAndValidity();
     });
   }
-  seedData() {
+  private seedData() {
     this.toCountries.pipe(map((value) => (value = mockData.countries)));
     this.fromCountries.pipe(map((value) => (value = mockData.countries)));
   }
