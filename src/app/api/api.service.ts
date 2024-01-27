@@ -29,22 +29,22 @@ export class ApiService {
     let message =
       'Sorry, we have no flights available. Please edit your search to find other routes';
     if (options.return.length > 3) {
-      let data1 = data.filter(
+      let return_flights = data.filter(
         (f) =>
           f.arrival_airport.includes(options.from) &&
           f.departure_airport.includes(options.to) &&
           f.departure_date == options.return
       );
-      if (data1.length > 0) {
-        let data2 = data.filter(
+      if (return_flights.length > 0) {
+        let departure_flights = data.filter(
           (f) =>
             f.arrival_airport.includes(options.to) &&
             f.departure_airport.includes(options.from) &&
             f.departure_date == options.depart
         );
-        if (data2.length > 0) {
+        if (departure_flights.length > 0) {
           message = 'Flights for the date you selected are listed';
-          const latestData = [...data2, ...data1];
+          const latestData = [...departure_flights, ...return_flights];
           return [latestData, message];
         } else {
           message = 'No flights found for the selected date.';
