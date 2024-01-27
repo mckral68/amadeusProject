@@ -1,0 +1,190 @@
+<div class="flex justify-center" style="background-color: #232b38">
+  <div class="reliative">
+    <div class="absolute left-4 top-2 text-white flex items-center">
+      <img
+        src="https://cdn.turkishairlines.com/m/14f15626e0a5407c/original/Turkish-Airlines-Small-3x-png.png"
+        alt="Thy Logo"
+        style="height: 34px"
+      />
+      TURKISH AIRLINES
+    </div>
+  </div>
+  <form
+    [formGroup]="searchForm"
+    (ngSubmit)="submitForm()"
+    class="flex flex-wrap justify-center gap-1 text-gray-600 p-14 items-center"
+  >
+    <div class="flex flex-grow min-w-[160px] flex-col">
+      <mat-form-field>
+        <mat-label>From</mat-label>
+        <input
+          type="text"
+          placeholder="Country, city or airport"
+          [placeholder]=""
+          aria-label="From"
+          matInput
+          name="from"
+          formControlName="from"
+          [matAutocomplete]="from"
+        />
+        <mat-autocomplete autoActiveFirstOption #from="matAutocomplete">
+          @for (c of fromCountries | async; track c) {
+          <mat-option
+            [value]="c.code"
+            [disabled]="
+              searchForm.controls['arrival_destination'].value == c.code
+            "
+            ><span
+              >{{ c.city }} ({{ c.country }}) ({{ c.code }})
+            </span></mat-option
+          >
+          }
+        </mat-autocomplete>
+      </mat-form-field>
+    </div>
+    <div class="flex flex-grow min-w-[160px] flex-col">
+      <mat-form-field>
+        <mat-label>To </mat-label>
+        <input
+          type="text"
+          placeholder="Country, city or airport"
+          [placeholder]=""
+          aria-label="To"
+          matInput
+          name="arrival_destination"
+          formControlName="arrival_destination"
+          [matAutocomplete]="arrival_destination"
+        />
+        <mat-autocomplete
+          autoActiveFirstOption
+          #arrival_destination="matAutocomplete"
+        >
+          @for (c of toCountries | async; track c) {
+          <mat-option
+            [value]="c.code"
+            [disabled]="searchForm.controls['from'].value == c.code"
+            ><span
+              >{{ c.city }} ({{ c.country }}) ({{ c.code }})
+            </span></mat-option
+          >
+          }
+        </mat-autocomplete>
+      </mat-form-field>
+    </div>
+    <div
+      class="flex shrink-0 flex-grow min-w-[160px] h-[3.9rem] items-center justify-around bg-white pl-2"
+    >
+      <label for="one-way" class="flex flex-col">One-way flight </label
+      ><input
+        type="checkbox"
+        formControlName="one_way"
+        id="one-way"
+        class="relative shrink-0 appearance-none w-6 h-6 border-2 border-sky-500 rounded-full bg-white mt-1 checked:bg-sky-600 checked:border-0"
+      />
+    </div>
+    <div class="h-[3.9rem] flex-col flex relative flex-grow min-w-[160px]">
+      <p class="absolute left-[.7rem] false text-slate-400">
+        Depart
+        {{ searchForm.get("departure_date").hasError("required") ? "*" : "" }}
+      </p>
+      <input
+        type="date"
+        [max]="[
+          !searchForm.get('one_way').value &&
+            searchForm.get('return_time').value
+        ]"
+        formControlName="departure_date"
+        class="bg-white pt-4 pb-3 pr-12 px-2 border-4 border-white"
+      />
+    </div>
+    @if(!searchForm.controls['one_way'].value){
+    <div
+      class="input-container flex-col flex relative flex-grow flex-shrink min-w-[160px]"
+    >
+      <p class="absolute left-[.7rem] text-slate-400">Return (*)</p>
+      <input
+        type="date"
+        formControlName="return_time"
+        [required]="!searchForm.controls['one_way'].value"
+        [min]="[searchForm.get('departure_date').value]"
+        class="bg-white pt-4 pb-3 pr-12 px-2 border-4 border-white"
+      />
+    </div>
+    }
+    <button
+      type="submit"
+      class="rounded-r-lg p-5 px-7 min-w-[160px] bg-sky-500 hover:bg-sky-400 active:bg-sky-300 text-white font-semibold flex-grow"
+    >
+      Search flights
+    </button>
+  </form>
+</div>
+@if(searchForm.invalid && errMessage?.length>0){
+<div
+  class="border-2 border-red-400 p-2 bg-red-900 text-white flex justify-center"
+>
+  <ul class="max-w-md space-y-1 text-white list-disc list-inside">
+    @for (e of errMessage; track $index) {
+    <li>
+      {{ e.key + ":  " + e.keyError }}
+    </li>
+    }
+  </ul>
+</div>
+} @if(searchForm.valid){
+<span class="text-sky-600 p-3 font-semibold">
+  {{ message }}
+</span>
+} @if( searchForm.valid && flights && flights.length>0){
+<div class="selection-container flex gap-2 justify-end p-2">
+  <div>
+    <label for="countries" class="block mb-2 text-sm font-medium text-dark-900"
+      >Sort By</label
+    >
+    <select
+      id="countries"
+      (change)="sortFlight($any($event.target).value)"
+      class="bg-gray-30 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
+    >
+      <option value="date">Departure Date</option>
+      <option value="price">Price</option>
+      <option value="duration">Flight duration</option>
+      <option value="time">Departure time</option>
+    </select>
+  </div>
+</div>
+<div
+  class="grid gap-3 p-3 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
+>
+  @for (f of flights; track $index) {
+  <ul
+    class="relative flex flex-col gap-4 border-2 border-sky-600 rounded overflow-hidden shadow-lg transition-shadow duration-500 hover:shadow-xl p-6"
+  >
+    <li class="absolute text-gray-400 self-end">{{ f.departure_date }}</li>
+    <li>{{ f.airline }}</li>
+    <li class="self-center">
+      {{ f.departure_airport }} =>
+      <span class="text-gray-600 text-sm font-thin"
+        >{{ f.duration | myTime }}
+      </span>
+      &gt;
+      {{ f.arrival_airport }}
+    </li>
+    <div class="flex justify-around font-bold">
+      <li>{{ f.departure_time }}</li>
+      <li>{{ f.arrival_time }}</li>
+    </div>
+    <li class="font-bold text-xl self-end">${{ f.price }}</li>
+  </ul>
+  }
+</div>
+}
+
+<ngx-spinner
+  bdColor="rgba(0, 0, 0, 0.8)"
+  size="medium"
+  color="#fff"
+  type="ball-clip-rotate-pulse"
+  [fullScreen]="true"
+  ><p style="color: white">Loading...</p></ngx-spinner
+>

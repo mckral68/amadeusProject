@@ -1,0 +1,10 @@
+* {
+  font-family: "Times New Roman", Times, serif;
+  font-size: 14px;
+}
+input.ng-touched.ng-invalid {
+  border-bottom: 5px solid #a94442;
+}
+input.ng-touched.ng-invalid {
+  border-bottom: 5px solid #42a948;
+}
