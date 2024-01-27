@@ -56,6 +56,7 @@ export class SearchBarComponent implements OnInit {
 
   ngOnInit(): void {
     this.formInit();
+    console.log('mhp');
 
     this.fromCountries = this.searchForm.controls['from'].valueChanges.pipe(
       startWith(''),
