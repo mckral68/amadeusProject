@@ -28,7 +28,7 @@ export class ApiService {
   async filterFlights(options: SearchParams, data: Flights[]) {
     let message =
       'Sorry, we have no flights available. Please edit your search to find other routes';
-    if (options.return.length > 3) {
+    if (options.return?.length > 3) {
       let return_flights = data.filter(
         (f) =>
           f.arrival_airport.includes(options.from) &&
